@@ -112,17 +112,16 @@ function renderOutbreaksList(outbreaks) {
   }
   outbreaks.forEach(ob => {
     const card = document.createElement('div');
-    card.className = 'card';
-    card.style.padding = '1rem';
+    card.className = 'geo-outbreak-card';
     card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div><b>${ob.location || ob.coords}</b></div>
-        <span class="severity-badge severity-${ob.severity}">${ob.severity}</span>
+      <div class="geo-card-header">
+        <div class="geo-card-title">${ob.location || ob.coords}</div>
+        <span class="geo-card-severity ${ob.severity}">${ob.severity}</span>
       </div>
-      <div style="margin-top:0.5rem;">${ob.diseaseType}</div>
-      <div style="font-size:0.95em;color:#888;">${ob.date}</div>
-      <div style="margin-top:0.5rem;">${ob.notes || ''}</div>
-      <button class="btn-secondary" style="margin-top:0.7rem;" onclick="openOutbreakDetails('${ob.id}')">More</button>
+      <div class="geo-card-disease">${ob.diseaseType}</div>
+      <div class="geo-card-date">${ob.date}</div>
+      <div class="geo-card-notes">${ob.notes || ''}</div>
+      <button class="geo-card-more" onclick="openOutbreakDetails('${ob.id}')">More</button>
     `;
     list.appendChild(card);
   });
@@ -144,78 +143,132 @@ style.innerHTML = `
 document.head.appendChild(style);
 
 // --- FAB Actions (UI + Backend placeholders) ---
+let tempMarker = null;
+let outbreakMarkers = [];
+
 function openAddOutbreakModal() {
-  // Show a modal for adding outbreak (UI only, backend will handle save)
-  // Backend: Save new outbreak to database/API
+  // User clicks Add: enable pin drop on map
+  if (tempMarker) {
+    map.removeLayer(tempMarker);
+    tempMarker = null;
+  }
+  map.getCanvas().style.cursor = 'crosshair';
+  const mapClickHandler = (e) => {
+    const coords = [e.lngLat.lng, e.lngLat.lat];
+    if (tempMarker) tempMarker.remove();
+    tempMarker = new maplibregl.Marker({ color: '#5D7C3A' })
+      .setLngLat(coords)
+      .addTo(map);
+    showAddOutbreakForm(coords);
+    map.getCanvas().style.cursor = '';
+    map.off('click', mapClickHandler);
+  };
+  map.once('click', mapClickHandler);
+}
+
+function showAddOutbreakForm(coords) {
   const modal = document.getElementById('modal-container');
   modal.innerHTML = `
-    <div class="modal-bg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:2000;display:flex;align-items:center;justify-content:center;">
-      <div class="card p-6" style="max-width:400px;width:100%;position:relative;">
-        <button onclick="document.getElementById('modal-container').innerHTML=''" style="position:absolute;top:1rem;right:1rem;font-size:1.3rem;background:none;border:none;">&times;</button>
-        <h3 class="font-bold mb-3">Add New Outbreak</h3>
+    <div class="geo-modal-bg">
+      <div class="geo-modal-card">
+        <button class="close-btn" onclick="document.getElementById('modal-container').innerHTML=''">&times;</button>
+        <h3>Add New Outbreak</h3>
         <form id="addOutbreakForm">
-          <label>Disease Type</label>
-          <input type="text" class="w-full mb-2" required placeholder="e.g. Maize Rust" />
-          <label>Severity</label>
-          <select class="w-full mb-2">
+          <input type="hidden" name="coords" value="${coords.join(',')}">
+          <input type="text" name="disease" required placeholder="Disease Type (e.g. Maize Rust)" />
+          <select name="severity" required>
+            <option value="">Severity</option>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
-          <label>Notes</label>
-          <textarea class="w-full mb-2" placeholder="Short note..."></textarea>
-          <button type="submit" class="btn-primary w-full mt-2">Save Outbreak</button>
+          <textarea name="notes" placeholder="Short note..."></textarea>
+          <input type="file" name="image" accept="image/*" style="margin-bottom:0.7rem;">
+          <button type="submit">Save Outbreak</button>
         </form>
-        <div class="text-xs text-gray-500 mt-2">* Backend will save this outbreak and update the map & sidebar.</div>
+        <div class="geo-modal-note">* Backend will save this outbreak and update the map & sidebar.</div>
       </div>
     </div>
   `;
-  // Backend: On submit, send data to backend and close modal
   document.getElementById('addOutbreakForm').onsubmit = function(e) {
     e.preventDefault();
-    // TODO: Backend developer will handle form submission
+    // Backend: Save outbreak to DB, including image
+    const form = e.target;
+    const data = {
+      id: Date.now().toString(),
+      coords: form.coords.value,
+      location: `(${form.coords.value})`,
+      diseaseType: form.disease.value,
+      severity: form.severity.value,
+      notes: form.notes.value,
+      date: new Date().toISOString().slice(0,10),
+      // Backend: handle image upload
+    };
+    // Add marker to map
+    addOutbreakMarker(data);
+    // Add to sidebar (simulate backend update)
+    sampleOutbreaks.unshift(data);
+    renderOutbreaksList(sampleOutbreaks);
     document.getElementById('modal-container').innerHTML = '';
+    showNotification('New outbreak added!');
   };
 }
 
-function locateFarm() {
-  // Use geolocation API to get user location and center map
-  // Backend: Optionally store/update farm location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      const lng = pos.coords.longitude;
-      const lat = pos.coords.latitude;
-      map.flyTo({ center: [lng, lat], zoom: 15 });
-      // Backend: Optionally update farm location in DB
-    }, function() {
-      // Could not get location
-      // Optionally show a message to user
-    });
-  }
+function addOutbreakMarker(data) {
+  const marker = new maplibregl.Marker({ color: data.severity === 'high' ? '#FF6B6B' : data.severity === 'medium' ? '#FFD93D' : '#8BAA61' })
+    .setLngLat(data.coords.split(',').map(Number))
+    .setPopup(new maplibregl.Popup({ offset: 18 })
+      .setHTML(`
+        <b>${data.diseaseType}</b><br>
+        <span class='geo-card-severity ${data.severity}'>${data.severity}</span><br>
+        <span style='font-size:0.97em;'>${data.date}</span><br>
+        <span style='font-size:0.97em;'>${data.notes || ''}</span>
+      `))
+    .addTo(map);
+  outbreakMarkers.push(marker);
 }
 
-function openOutbreakDetails(id) {
-  // Show a modal with outbreak details (UI only, backend will provide data)
-  // Backend: Fetch outbreak details by ID
-  const outbreak = (window.sampleOutbreaks || []).find(o => o.id === id);
-  const modal = document.getElementById('modal-container');
-  if (!outbreak) {
-    modal.innerHTML = '';
-    return;
+function showNotification(msg) {
+  // Simple notification (replace with real notification system as needed)
+  const notif = document.createElement('div');
+  notif.textContent = msg;
+  notif.style.position = 'fixed';
+  notif.style.top = '80px';
+  notif.style.right = '30px';
+  notif.style.background = '#5D7C3A';
+  notif.style.color = '#fff';
+  notif.style.padding = '1rem 1.5rem';
+  notif.style.borderRadius = '0.7rem';
+  notif.style.boxShadow = '0 2px 8px rgba(93,124,58,0.13)';
+  notif.style.zIndex = 3000;
+  notif.style.fontWeight = '600';
+  notif.style.opacity = 0.97;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.remove(), 2500);
+}
+
+// Filter by issue type
+function filterOutbreaks() {
+  const disease = document.getElementById('filter-disease').value;
+  const severity = document.getElementById('filter-severity').value;
+  let filtered = sampleOutbreaks;
+  if (disease) filtered = filtered.filter(o => o.diseaseType.toLowerCase().includes(disease.replace('_',' ').toLowerCase()));
+  if (severity) filtered = filtered.filter(o => o.severity === severity);
+  renderOutbreaksList(filtered);
+  // Optionally update map markers as well
+}
+
+document.addEventListener('change', function(e) {
+  if (e.target && (e.target.id === 'filter-disease' || e.target.id === 'filter-severity')) {
+    filterOutbreaks();
   }
-  modal.innerHTML = `
-    <div class="modal-bg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:2000;display:flex;align-items:center;justify-content:center;">
-      <div class="card p-6" style="max-width:400px;width:100%;position:relative;">
-        <button onclick="document.getElementById('modal-container').innerHTML=''" style="position:absolute;top:1rem;right:1rem;font-size:1.3rem;background:none;border:none;">&times;</button>
-        <h3 class="font-bold mb-3">Outbreak Details</h3>
-        <div><b>Disease:</b> ${outbreak.diseaseType}</div>
-        <div><b>Severity:</b> <span class="severity-badge severity-${outbreak.severity}">${outbreak.severity}</span></div>
-        <div><b>Date:</b> ${outbreak.date}</div>
-        <div><b>Notes:</b> ${outbreak.notes || ''}</div>
-        <div class="text-xs text-gray-500 mt-2">* Backend will provide more details, images, and actions here.</div>
-      </div>
-    </div>
-  `;
+});
+
+// On map load, add markers for all outbreaks
+function addAllOutbreakMarkers() {
+  outbreakMarkers.forEach(m => m.remove());
+  outbreakMarkers = [];
+  sampleOutbreaks.forEach(addOutbreakMarker);
 }
 
 // --- INIT ---
@@ -225,4 +278,26 @@ window.onload = () => {
   initMap();
   setupFABs();
   renderOutbreaksList(sampleOutbreaks); // Replace with backend data
+  addAllOutbreakMarkers();
+  // Update filter bar for a cleaner, less crowded look
+  const filterBar = document.querySelector('.filter-bar');
+  if (filterBar) {
+    filterBar.classList.add('geo-filter-bar');
+    filterBar.innerHTML = `
+      <select id="filter-disease">
+        <option value="">All Diseases</option>
+        <option value="maize_rust">Maize Rust</option>
+        <option value="blight">Blight</option>
+      </select>
+      <select id="filter-severity">
+        <option value="">All Severities</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <input type="date" id="filter-date-start" placeholder="Start Date">
+      <input type="date" id="filter-date-end" placeholder="End Date">
+      <input type="search" id="filter-search" placeholder="Search...">
+    `;
+  }
 };
