@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropAI | Disease Alerts</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/navbar.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css">
+  <style>
+    .alerts-layout { display: flex; flex-direction: column; min-height: 100vh; background: #f7faf7; }
+    .alerts-header { padding: 2rem 2rem 1rem 2rem; }
+    .alerts-banner { background: #fff0f0; border-left: 6px solid #e53e3e; border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.2rem; box-shadow: 0 2px 8px 0 rgba(229,62,62,0.07); }
+    .alerts-banner .fa-exclamation-triangle { color: #e53e3e; font-size: 2.2rem; }
+    .alerts-banner-content { flex: 1; }
+    .alerts-banner-title { font-size: 1.15rem; font-weight: 700; color: #b91c1c; margin-bottom: 0.2rem; }
+    .alerts-banner-meta { color: #b91c1c; font-size: 0.98rem; }
+    .alerts-filters { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.2rem; }
+    .alerts-main { display: flex; flex: 1; gap: 2rem; padding: 0 2rem 2rem 2rem; }
+    .alerts-cards { flex: 2; display: flex; flex-direction: column; gap: 1.2rem; }
+    .alert-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px 0 rgba(93,124,58,0.07); padding: 1.1rem 1.2rem; display: flex; align-items: flex-start; gap: 1.1rem; border-left: 5px solid #5D7C3A; cursor: pointer; transition: box-shadow 0.13s; }
+    .alert-card:hover { box-shadow: 0 4px 16px 0 rgba(93,124,58,0.13); }
+    .alert-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #f1f5f9; }
+    .alert-info { flex: 1; }
+    .alert-title { font-weight: 600; font-size: 1.05rem; color: #46602a; margin-bottom: 0.2rem; }
+    .alert-meta { font-size: 0.97rem; color: #64748b; margin-bottom: 0.2rem; }
+    .alert-badges { display: flex; gap: 0.5rem; margin-bottom: 0.2rem; }
+    .badge { font-size: 0.85rem; font-weight: 600; padding: 0.18rem 0.7rem; border-radius: 6px; color: #fff; }
+    .badge-critical { background: #e53e3e; }
+    .badge-warning { background: #f59e42; }
+    .badge-info { background: #38a169; }
+    .alert-time { font-size: 0.92rem; color: #a0aec0; }
+    .alert-region { font-size: 0.95rem; color: #5D7C3A; font-weight: 500; }
+    .alerts-map { flex: 1.2; min-width: 320px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px 0 rgba(93,124,58,0.07); height: 420px; overflow: hidden; }
+    .alerts-map-header { font-size: 1rem; font-weight: 600; color: #46602a; padding: 1rem 1.2rem 0.5rem 1.2rem; }
+    .alerts-map-view { width: 100%; height: 350px; border-radius: 8px; }
+    @media (max-width: 1100px) { .alerts-main { flex-direction: column; gap: 1.2rem; } .alerts-map { height: 320px; min-width: unset; } }
+    @media (max-width: 700px) { .alerts-header, .alerts-main { padding: 1rem 0.5rem; } .alerts-map { height: 220px; } }
+    @media (max-width: 500px) { .alerts-banner { flex-direction: column; align-items: flex-start; } .alerts-main { padding: 0.2rem; } }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <script>
+    fetch('components/navbar.html').then(res => res.text()).then(html => { document.getElementById('navbar-container').innerHTML = html; });
+  </script>
+  <div class="alerts-layout">
+    <div class="alerts-header">
+      <div class="alerts-banner" id="alertsBanner">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="alerts-banner-content">
+          <div class="alerts-banner-title" id="bannerTitle">Critical: Maize Rust Outbreak in Western Region</div>
+          <div class="alerts-banner-meta" id="bannerMeta">15 cases in 24h • Severity: <span class="badge badge-critical">Critical</span> • 2km radius</div>
+        </div>
+        <button class="btn-secondary px-4 py-2 rounded" id="shareBanner"><i class="fas fa-share-alt mr-2"></i>Share</button>
+      </div>
+      <div class="alerts-filters">
+        <select class="analytics-filter" id="filter-crop">
+          <option value="All">All Crops</option>
+          <option value="Maize">Maize</option>
+          <option value="Wheat">Wheat</option>
+          <option value="Rice">Rice</option>
+        </select>
+        <select class="analytics-filter" id="filter-severity">
+          <option value="All">All Severities</option>
+          <option value="Critical">Critical</option>
+          <option value="Warning">Warning</option>
+          <option value="Info">Info</option>
+        </select>
+        <select class="analytics-filter" id="filter-time">
+          <option value="24h">Last 24h</option>
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
+          <option value="all">All Time</option>
+        </select>
+      </div>
+    </div>
+    <div class="alerts-main">
+      <div class="alerts-cards" id="alertsCards">
+        <!-- Alert cards will be loaded here by JS -->
+      </div>
+      <div class="alerts-map">
+        <div class="alerts-map-header">Map View <span style="font-weight:400;font-size:0.95rem;color:#64748b;">(clustered)</span></div>
+        <div id="alertsMap" class="alerts-map-view"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
+  <script src="assets/js/alerts.js"></script>
+</body>
+</html>

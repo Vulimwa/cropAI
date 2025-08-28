@@ -352,15 +352,3 @@ body, html {
 .geo-outbreak-card .geo-card-more:hover {
   background: #dfe3cd;
 }
-
-@media (max-width: 700px) {
-  .geo-modal-card {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
-  }
-  .geo-filter-bar {
-    padding: 0.7rem 0.5rem;
-  }
-  .geo-outbreak-card {
-    padding: 0.8rem 0.5rem 0.8rem 0.7rem;
-  }
-}
