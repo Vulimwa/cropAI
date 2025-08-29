@@ -1,6 +1,22 @@
 # CropGuard AI - Farmer App
 
+A responsive web application created to support small-scale farmers in safeguarding their crops from diseases using AI technology.
 
+## Features
+
+- **AI Disease Detection**: Upload photos of affected plants for real-time disease analysis
+- **Multilingual Support**: English, Swahili, French, Hindi, and Spanish
+- **Offline Mode**: Store past results locally for access in low-connectivity areas
+- **Treatment & Advice**: Get practical recommendations for crop care after analysis
+- **Community Forum**: Local farmers can post issues and share experiences
+- **Community Reports**: View and generate community reports
+- **Dark/Light Theme**: Toggle between dark and light modes
+- **Local Storage**: Scan history stored locally for easy access
+- **Responsive Design**: Mobile-first approach for all devices
+
+## Authentication
+
+The app now uses separate pages for authentication:
 
 - **`index.html`** - Main application with welcome banner and navigation
 - **`login.html`** - Login page for existing users
@@ -9,7 +25,6 @@
 ### Demo Mode
 
 This is a frontend-only demo application. The authentication system simulates login/signup processes without backend validation.
-
 
 ## Usage
 
@@ -42,4 +57,3 @@ cropAI/
 - Modern browsers with ES6+ support
 - LocalStorage support required
 - Camera API support for photo capture (optional)
-
