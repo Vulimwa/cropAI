@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CropGuard AI - Farmer App</title>
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/navbar.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,6 @@
     <span id="offlineText">You are currently offline. Some features may be limited.</span>
   </div>
 
-  <!-- Navbar (dynamically loaded) -->
   <div id="navbar-container"></div>
   <script>
     fetch('components/navbar.html')
@@ -26,6 +25,17 @@
         document.getElementById('navbar-container').innerHTML = html;
       });
   </script>
+
+  <!-- Settings Modal/Button (dynamically loaded after navbar) -->
+  <div id="settings-container"></div>
+  <script>
+    fetch('components/settings.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('settings-container').innerHTML = html;
+      });
+  </script>
+  <script src="assets/js/settings.js"></script>
 
   <!-- Main Content -->
   <main class="container mx-auto px-4 py-6 mt-navbar">

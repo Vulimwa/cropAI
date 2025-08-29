@@ -1,79 +1,90 @@
 // --- Disease Alerts Tab Logic ---
-// Backend-ready: Replace sample data with Supabase/PostGIS fetches
+// Backend-ready: All alert data is loaded via fetchAlerts(). Replace fetchAlerts with your backend API call (e.g., Supabase, REST, GraphQL, etc).
 
-// Sample alert data (replace with backend fetch)
-let alerts = [
-  {
-    id: 1,
-    title: 'Maize Rust Outbreak',
-    crop: 'Maize',
-    disease: 'Maize Rust',
-    severity: 'Critical',
-    region: 'Western',
-    time: '18 min ago',
-    reportedAt: Date.now() - 18*60*1000,
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=80&q=80',
-    location: [36.8, -0.9],
-    farmers: ['John Doe', 'Jane Smith'],
-    recommendations: 'Spray with recommended fungicide. Monitor closely.'
-  },
-  {
-    id: 2,
-    title: 'Wheat Rust Detected',
-    crop: 'Wheat',
-    disease: 'Wheat Rust',
-    severity: 'Warning',
-    region: 'Rift Valley',
-    time: '1 hr ago',
-    reportedAt: Date.now() - 60*60*1000,
-    image: 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=80&q=80',
-    location: [35.3, -0.5],
-    farmers: ['Mary W.', 'Paul K.'],
-    recommendations: 'Scout nearby fields. Early intervention advised.'
-  },
-  {
-    id: 3,
-    title: 'Rice Blast Observation',
-    crop: 'Rice',
-    disease: 'Rice Blast',
-    severity: 'Info',
-    region: 'Central',
-    time: '3 hrs ago',
-    reportedAt: Date.now() - 3*60*60*1000,
-    image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=80&q=80',
-    location: [37.1, -0.2],
-    farmers: ['Ali M.'],
-    recommendations: 'Monitor for spread. No action needed yet.'
-  },
-  {
-    id: 4,
-    title: 'New Maize Streak Virus',
-    crop: 'Maize',
-    disease: 'Maize Streak Virus',
-    severity: 'Warning',
-    region: 'Central',
-    time: '2 hrs ago',
-    reportedAt: Date.now() - 2*60*60*1000,
-    image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=80&q=80',
-    location: [36.9, -0.3],
-    farmers: ['Grace N.'],
-    recommendations: 'Isolate affected plants. Report further spread.'
-  },
-  {
-    id: 5,
-    title: 'Wheat Smut Alert',
-    crop: 'Wheat',
-    disease: 'Wheat Smut',
-    severity: 'Info',
-    region: 'Western',
-    time: '5 hrs ago',
-    reportedAt: Date.now() - 5*60*60*1000,
-    image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=80&q=80',
-    location: [36.7, -1.1],
-    farmers: ['Peter O.'],
-    recommendations: 'Monitor and report if symptoms worsen.'
-  }
-];
+/**
+ * Fetch alerts from backend API.
+ * Replace this with your backend integration (Supabase, REST, etc).
+ * Should return a Promise that resolves to an array of alert objects.
+ */
+async function fetchAlerts() {
+  // TODO: Replace this sample data with a real backend call
+  // Example: return fetch('/api/alerts').then(res => res.json());
+  return [
+    {
+      id: 1,
+      title: 'Maize Rust Outbreak',
+      crop: 'Maize',
+      disease: 'Maize Rust',
+      severity: 'Critical',
+      region: 'Western',
+      time: '18 min ago',
+      reportedAt: Date.now() - 18*60*1000,
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=80&q=80',
+      location: [36.8, -0.9],
+      farmers: ['John Doe', 'Jane Smith'],
+      recommendations: 'Spray with recommended fungicide. Monitor closely.'
+    },
+    {
+      id: 2,
+      title: 'Wheat Rust Detected',
+      crop: 'Wheat',
+      disease: 'Wheat Rust',
+      severity: 'Warning',
+      region: 'Rift Valley',
+      time: '1 hr ago',
+      reportedAt: Date.now() - 60*60*1000,
+      image: 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=80&q=80',
+      location: [35.3, -0.5],
+      farmers: ['Mary W.', 'Paul K.'],
+      recommendations: 'Scout nearby fields. Early intervention advised.'
+    },
+    {
+      id: 3,
+      title: 'Rice Blast Observation',
+      crop: 'Rice',
+      disease: 'Rice Blast',
+      severity: 'Info',
+      region: 'Central',
+      time: '3 hrs ago',
+      reportedAt: Date.now() - 3*60*60*1000,
+      image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=80&q=80',
+      location: [37.1, -0.2],
+      farmers: ['Ali M.'],
+      recommendations: 'Monitor for spread. No action needed yet.'
+    },
+    {
+      id: 4,
+      title: 'New Maize Streak Virus',
+      crop: 'Maize',
+      disease: 'Maize Streak Virus',
+      severity: 'Warning',
+      region: 'Central',
+      time: '2 hrs ago',
+      reportedAt: Date.now() - 2*60*60*1000,
+      image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=80&q=80',
+      location: [36.9, -0.3],
+      farmers: ['Grace N.'],
+      recommendations: 'Isolate affected plants. Report further spread.'
+    },
+    {
+      id: 5,
+      title: 'Wheat Smut Alert',
+      crop: 'Wheat',
+      disease: 'Wheat Smut',
+      severity: 'Info',
+      region: 'Western',
+      time: '5 hrs ago',
+      reportedAt: Date.now() - 5*60*60*1000,
+      image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=80&q=80',
+      location: [36.7, -1.1],
+      farmers: ['Peter O.'],
+      recommendations: 'Monitor and report if symptoms worsen.'
+    }
+  ];
+}
+
+// Holds the current list of alerts in memory
+let alerts = [];
 
 // MapTiler basemaps (updated keys and styles)
 let currentMapStyle = 'street';
@@ -88,6 +99,10 @@ const mapStyles = {
 let map;
 let mapLoaded = false;
 
+/**
+ * Filter alerts based on UI filter controls.
+ * This function is backend-ready: just ensure alerts[] is up-to-date from backend.
+ */
 function filterAlerts() {
   const cropFilter = document.getElementById('filter-crop');
   const severityFilter = document.getElementById('filter-severity');
@@ -187,8 +202,11 @@ function drawMarkers(alertList) {
   console.log(`[CropAI Alerts] Markers drawn: ${alertList.length}`);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+
+// --- MAIN ENTRY: Backend-ready initialization ---
+document.addEventListener('DOMContentLoaded', async function () {
   console.log('[CropAI Alerts] JS loaded, DOM ready');
+
   // Map style switcher
   const mapStyleSwitcher = document.getElementById('mapStyleSwitcher');
   if (mapStyleSwitcher) {
@@ -198,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Share menu logic
+  // Share menu logic (unchanged)
   const shareBtn = document.getElementById('shareBanner');
   const shareMenu = document.getElementById('shareMenu');
   let shareMenuOpen = false;
@@ -290,8 +308,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(modal);
   }
 
-  // Initial load
-  updateBanner();
-  filterAlerts();
-  console.log('[CropAI Alerts] Initial render complete');
+  // --- BACKEND INTEGRATION: Load alerts from backend and render ---
+  try {
+    alerts = await fetchAlerts(); // Fetch from backend (replace fetchAlerts with your API call)
+    updateBanner();
+    filterAlerts();
+    console.log('[CropAI Alerts] Initial render complete');
+  } catch (err) {
+    console.error('[CropAI Alerts] Failed to load alerts from backend:', err);
+    // Optionally show error UI here
+  }
 });

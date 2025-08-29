@@ -103,6 +103,10 @@ function toggleSidePanel() {
 }
 
 // --- Outbreaks List (Sidebar) ---
+/**
+ * Render outbreaks in the sidebar list.
+ * Backend-ready: outbreaks[] should be loaded from backend.
+ */
 function renderOutbreaksList(outbreaks) {
   const list = document.getElementById('outbreaks-list');
   list.innerHTML = '';
@@ -127,11 +131,22 @@ function renderOutbreaksList(outbreaks) {
   });
 }
 
-// --- Placeholder: Outbreak Data (to be replaced by backend) ---
-const sampleOutbreaks = [
-  { id: '1', location: 'Field A', coords: '36.8,-1.29', diseaseType: 'Maize Rust', severity: 'high', date: '2025-08-25', notes: 'Spotted near river.' },
-  { id: '2', location: 'Field B', coords: '36.9,-1.30', diseaseType: 'Blight', severity: 'medium', date: '2025-08-26', notes: 'Early signs.' },
-];
+/**
+ * Fetch outbreaks from backend API.
+ * Replace this with your backend integration (Supabase, REST, etc).
+ * Should return a Promise that resolves to an array of outbreak objects.
+ */
+async function fetchOutbreaks() {
+  // TODO: Replace this sample data with a real backend call
+  // Example: return fetch('/api/outbreaks').then(res => res.json());
+  return [
+    { id: '1', location: 'Field A', coords: '36.8,-1.29', diseaseType: 'Maize Rust', severity: 'high', date: '2025-08-25', notes: 'Spotted near river.' },
+    { id: '2', location: 'Field B', coords: '36.9,-1.30', diseaseType: 'Blight', severity: 'medium', date: '2025-08-26', notes: 'Early signs.' },
+  ];
+}
+
+// Holds the current list of outbreaks in memory
+let outbreaks = [];
 
 // --- Severity Badge Colors ---
 const style = document.createElement('style');
@@ -204,11 +219,12 @@ function showAddOutbreakForm(coords) {
       date: new Date().toISOString().slice(0,10),
       // Backend: handle image upload
     };
-    // Add marker to map
+    // --- BACKEND INTEGRATION: Save new outbreak to backend here ---
+    // Example: await fetch('/api/outbreaks', { method: 'POST', body: JSON.stringify(data) })
+    // For now, just update local list:
     addOutbreakMarker(data);
-    // Add to sidebar (simulate backend update)
-    sampleOutbreaks.unshift(data);
-    renderOutbreaksList(sampleOutbreaks);
+    outbreaks.unshift(data);
+    renderOutbreaksList(outbreaks);
     document.getElementById('modal-container').innerHTML = '';
     showNotification('New outbreak added!');
   };
@@ -248,10 +264,14 @@ function showNotification(msg) {
 }
 
 // Filter by issue type
+/**
+ * Filter outbreaks based on UI filter controls.
+ * Backend-ready: outbreaks[] should be up-to-date from backend.
+ */
 function filterOutbreaks() {
   const disease = document.getElementById('filter-disease').value;
   const severity = document.getElementById('filter-severity').value;
-  let filtered = sampleOutbreaks;
+  let filtered = outbreaks;
   if (disease) filtered = filtered.filter(o => o.diseaseType.toLowerCase().includes(disease.replace('_',' ').toLowerCase()));
   if (severity) filtered = filtered.filter(o => o.severity === severity);
   renderOutbreaksList(filtered);
@@ -268,36 +288,46 @@ document.addEventListener('change', function(e) {
 function addAllOutbreakMarkers() {
   outbreakMarkers.forEach(m => m.remove());
   outbreakMarkers = [];
-  sampleOutbreaks.forEach(addOutbreakMarker);
+  outbreaks.forEach(addOutbreakMarker);
 }
 
 // --- INIT ---
-window.onload = () => {
+// --- MAIN ENTRY: Backend-ready initialization ---
+window.onload = async () => {
   setupNavbar();
   setupThemeToggle();
   initMap();
   setupFABs();
-  renderOutbreaksList(sampleOutbreaks); // Replace with backend data
-  addAllOutbreakMarkers();
-  // Update filter bar for a cleaner, less crowded look
-  const filterBar = document.querySelector('.filter-bar');
-  if (filterBar) {
-    filterBar.classList.add('geo-filter-bar');
-    filterBar.innerHTML = `
-      <select id="filter-disease">
-        <option value="">All Diseases</option>
-        <option value="maize_rust">Maize Rust</option>
-        <option value="blight">Blight</option>
-      </select>
-      <select id="filter-severity">
-        <option value="">All Severities</option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <input type="date" id="filter-date-start" placeholder="Start Date">
-      <input type="date" id="filter-date-end" placeholder="End Date">
-      <input type="search" id="filter-search" placeholder="Search...">
-    `;
+
+  // --- BACKEND INTEGRATION: Load outbreaks from backend and render ---
+  try {
+    outbreaks = await fetchOutbreaks(); // Fetch from backend (replace fetchOutbreaks with your API call)
+    renderOutbreaksList(outbreaks);
+    addAllOutbreakMarkers();
+    // Update filter bar for a cleaner, less crowded look
+    const filterBar = document.querySelector('.filter-bar');
+    if (filterBar) {
+      filterBar.classList.add('geo-filter-bar');
+      filterBar.innerHTML = `
+        <select id="filter-disease">
+          <option value="">All Diseases</option>
+          <option value="maize_rust">Maize Rust</option>
+          <option value="blight">Blight</option>
+        </select>
+        <select id="filter-severity">
+          <option value="">All Severities</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <input type="date" id="filter-date-start" placeholder="Start Date">
+        <input type="date" id="filter-date-end" placeholder="End Date">
+        <input type="search" id="filter-search" placeholder="Search...">
+      `;
+    }
+    console.log('[CropAI Geotagging] Initial render complete');
+  } catch (err) {
+    console.error('[CropAI Geotagging] Failed to load outbreaks from backend:', err);
+    // Optionally show error UI here
   }
 };

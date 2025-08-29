@@ -1,3 +1,58 @@
+/* Responsive fixes for Comparison Tool on mobile */
+@media (max-width: 500px) {
+  .comparison-tool, .comparison-tool * {
+    font-size: 0.97rem !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+  }
+  .comparison-tool .card, .comparison-tool .comparison-card, .comparison-tool .comparison-table, .comparison-tool .comparison-table th, .comparison-tool .comparison-table td {
+    font-size: 0.97rem !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+  .comparison-tool .comparison-table th, .comparison-tool .comparison-table td {
+    padding: 0.4em 0.3em !important;
+    max-width: 120px;
+  }
+  .comparison-tool .comparison-header, .comparison-tool .comparison-title {
+    font-size: 1.05rem !important;
+    text-align: center;
+    word-break: break-word !important;
+    hyphens: auto !important;
+  }
+}
+@media (max-width: 340px) {
+  .analytics-header .flex.flex-wrap {
+    flex-wrap: wrap !important;
+    overflow-x: unset !important;
+    gap: 0.4rem;
+    row-gap: 0.4rem;
+    justify-content: flex-start;
+  }
+  .analytics-header .analytics-filter,
+  .analytics-header .btn-secondary {
+    min-width: 120px;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+@media (max-width: 340px) {
+  .sidebar-tabs {
+    flex-wrap: wrap;
+    row-gap: 0.3rem;
+    justify-content: flex-start;
+  }
+  .sidebar-tab {
+    flex: 1 1 50%;
+    min-width: 0;
+    max-width: 50%;
+    margin-bottom: 0.2rem;
+    font-size: 0.78rem;
+    padding: 0.42rem 0.03rem;
+  }
+}
 /* --- Geotagging Outbreak Card Responsive Styles --- */
 .outbreaks-list {
   display: block;
@@ -76,6 +131,12 @@
   margin-bottom: 0.2rem;
 }
 .outbreak-card .card-more {
+.sidebar-tab {
+  min-width: 0;
+  flex: 1 1 0;
+  white-space: normal;
+  word-break: break-word;
+}
   align-self: flex-end;
   margin-top: 0.3rem;
   background: #E9EBDE;
@@ -126,6 +187,17 @@
   .outbreak-card-content {
     flex-direction: column;
     gap: 0.1rem;
+  }
+}
+@media (max-width: 600px) {
+  .sidebar-tab i {
+    display: none !important;
+  }
+  .sidebar-tab {
+    font-size: 0.93rem;
+    padding: 0.5rem 0.15rem;
+    min-width: 60px;
+    max-width: 120px;
   }
 }
 /* --- Geotagging Responsive Layout --- */
@@ -1873,6 +1945,7 @@ body {
   display: flex;
   min-height: 100vh;
   background: #f7faf7;
+  margin-top: 64px;
 }
 
 .analytics-sidebar {
@@ -1938,6 +2011,25 @@ body {
 
 .analytics-header {
   margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .analytics-layout {
+    margin-top: 56px;
+  }
+}
+
+/* Make analytics filters scrollable on mobile */
+.analytics-header .flex.flex-wrap {
+  overflow-x: auto;
+  flex-wrap: nowrap !important;
+  -webkit-overflow-scrolling: touch;
+  gap: 0.5rem;
+}
+.analytics-header .analytics-filter,
+.analytics-header .btn-secondary {
+  min-width: 120px;
+  flex: 0 0 auto;
 }
 
 .analytics-filter {

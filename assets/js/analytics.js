@@ -53,10 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // --- Modular Panel Loaders ---
-  function loadOverviewPanels() {
-    // --- OVERVIEW PANELS ---
-    // Professional, animated, interactive overview cards + AI Insights
-    // TODO: BACKEND - Replace static values with API data for summary cards and AI insights
+  /**
+   * Load Overview Panels (backend-ready)
+   * All data is loaded via fetchOverviewData().
+   * Replace fetchOverviewData with your backend API call.
+   */
+  async function loadOverviewPanels() {
     dashboardPanels.innerHTML = `
       <div class="overview-cards-grid">
         <div class="dashboard-card overview-card animate-card" id="cardTotalReports">
@@ -85,9 +87,10 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
     `;
-  // TODO: BACKEND - Fetch and update data from backend here
-  // Example: fetch('/api/overview').then(...)
-  // Animate numbers in
+    // --- BACKEND INTEGRATION: Fetch overview data from backend ---
+    // Example: const data = await fetch('/api/overview').then(r => r.json());
+    const data = await fetchOverviewData();
+    // Animate numbers in
     function animateNumber(id, end, duration = 900) {
       const el = document.getElementById(id);
       let start = 0;
@@ -103,11 +106,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       tick();
     }
-  // TODO: BACKEND - Replace these with real values from backend
-  animateNumber('totalReports', 1245); // e.g. totalReports from API
-  animateNumber('activeOutbreaks', 7); // e.g. activeOutbreaks from API
-  animateNumber('avgYield', 3.2);      // e.g. avgYield from API
-  document.getElementById('aiInsights').textContent = 'No major outbreaks detected. Yields are above average.'; // e.g. aiInsights from API
+    animateNumber('totalReports', data.totalReports);
+    animateNumber('activeOutbreaks', data.activeOutbreaks);
+    animateNumber('avgYield', data.avgYield);
+    document.getElementById('aiInsights').textContent = data.aiInsights;
     // Card hover/active effect
     document.querySelectorAll('.overview-card').forEach(card => {
       card.addEventListener('mouseenter', () => card.classList.add('active'));
@@ -115,10 +117,28 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function loadDiseasePanels() {
-    // --- DISEASE ANALYTICS PANELS ---
-    // Modern, creative, professional grid layout
-    // TODO: BACKEND - Replace static chart data and top diseases with API data
+  /**
+   * Fetch overview data from backend API.
+   * Replace this with your backend integration (Supabase, REST, etc).
+   * Should return a Promise that resolves to an object with totalReports, activeOutbreaks, avgYield, aiInsights.
+   */
+  async function fetchOverviewData() {
+    // TODO: Replace this sample data with a real backend call
+    // Example: return fetch('/api/overview').then(res => res.json());
+    return {
+      totalReports: 1245,
+      activeOutbreaks: 7,
+      avgYield: 3.2,
+      aiInsights: 'No major outbreaks detected. Yields are above average.'
+    };
+  }
+
+  /**
+   * Load Disease Analytics Panels (backend-ready)
+   * All data is loaded via fetchDiseaseAnalytics().
+   * Replace fetchDiseaseAnalytics with your backend API call.
+   */
+  async function loadDiseasePanels() {
     dashboardPanels.innerHTML = `
       <div class="disease-analytics-pro-grid four-cards-grid">
         <div class="dashboard-card disease-trends-card animate-card">
@@ -147,21 +167,18 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
     `;
-  // No map card: only initialize the four main cards' charts and info
-  // TODO: BACKEND - Fetch disease analytics data here (trends, pie, yield, top diseases)
-  // Example: fetch('/api/disease-analytics').then(...)
+    // --- BACKEND INTEGRATION: Fetch disease analytics from backend ---
+    // Example: const data = await fetch('/api/disease-analytics').then(r => r.json());
+    const data = await fetchDiseaseAnalytics();
     // --- Yield Prediction Chart (Bar) ---
-    // --- Yield Prediction Chart (Bar) ---
-    // TODO: BACKEND - Replace chart data with backend values
-    // Example: fetch('/api/yield-prediction').then(...)
     const yieldCtx = document.getElementById('yieldPredictionChart').getContext('2d');
     new Chart(yieldCtx, {
       type: 'bar',
       data: {
-        labels: ['Maize', 'Wheat', 'Rice'],
+        labels: data.yield.labels,
         datasets: [{
           label: 'Predicted Yield (t/ha)',
-          data: [3.2, 2.7, 4.1], // TODO: BACKEND - Replace with API data
+          data: data.yield.values,
           backgroundColor: ['#5D7C3A', '#8DB255', '#B7D77A']
         }]
       },
@@ -171,17 +188,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
     // --- Disease Trends Chart (Line) ---
-    // --- Disease Trends Chart (Line) ---
-    // TODO: BACKEND - Replace chart data with backend values
-    // Example: fetch('/api/disease-trends').then(...)
     const ctx = document.getElementById('diseaseTrendsChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        labels: data.trends.labels,
         datasets: [{
           label: 'Disease Reports',
-          data: [12, 19, 14, 22, 18, 25], // TODO: BACKEND - Replace with API data
+          data: data.trends.values,
           borderColor: '#5D7C3A',
           backgroundColor: 'rgba(93,124,58,0.12)',
           tension: 0.3,
@@ -194,26 +208,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
     // --- Top Diseases List ---
-    // --- Top Diseases List ---
-    // TODO: BACKEND - Replace with API data
-    // Example: fetch('/api/top-diseases').then(...)
-    document.getElementById('topDiseasesList').innerHTML = `
-      <li>Maize Lethal Necrosis (MLN) - 45%</li>
-      <li>Wheat Rust - 30%</li>
-      <li>Rice Blast - 15%</li>
-      <li>Other - 10%</li>
-    `;
+    document.getElementById('topDiseasesList').innerHTML = data.topDiseases.map(d => `<li>${d}</li>`).join('');
     // --- Disease Distribution Pie/Donut Chart ---
-    // --- Disease Distribution Pie/Donut Chart ---
-    // TODO: BACKEND - Replace chart data with backend values
-    // Example: fetch('/api/disease-distribution').then(...)
     const pieCtx = document.getElementById('diseasePieChart').getContext('2d');
     new Chart(pieCtx, {
       type: 'doughnut',
       data: {
-        labels: ['Maize Lethal Necrosis', 'Wheat Rust', 'Rice Blast', 'Other'],
+        labels: data.distribution.labels,
         datasets: [{
-          data: [45, 30, 15, 10], // TODO: BACKEND - Replace with API data
+          data: data.distribution.values,
           backgroundColor: ['#5D7C3A', '#8DB255', '#B7D77A', '#e2e8f0'],
           borderWidth: 1
         }]
@@ -225,7 +228,36 @@ document.addEventListener('DOMContentLoaded', function () {
         cutout: '65%'
       }
     });
-    // TODO: Replace all above with backend data and filters for crop, location, time
+  }
+
+  /**
+   * Fetch disease analytics from backend API.
+   * Replace this with your backend integration (Supabase, REST, etc).
+   * Should return a Promise that resolves to an object with trends, yield, topDiseases, distribution.
+   */
+  async function fetchDiseaseAnalytics() {
+    // TODO: Replace this sample data with a real backend call
+    // Example: return fetch('/api/disease-analytics').then(res => res.json());
+    return {
+      trends: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        values: [12, 19, 14, 22, 18, 25]
+      },
+      yield: {
+        labels: ['Maize', 'Wheat', 'Rice'],
+        values: [3.2, 2.7, 4.1]
+      },
+      topDiseases: [
+        'Maize Lethal Necrosis (MLN) - 45%',
+        'Wheat Rust - 30%',
+        'Rice Blast - 15%',
+        'Other - 10%'
+      ],
+      distribution: {
+        labels: ['Maize Lethal Necrosis', 'Wheat Rust', 'Rice Blast', 'Other'],
+        values: [45, 30, 15, 10]
+      }
+    };
   }
 
   // function loadYieldPanels() { /* Removed Crop Yield Prediction tab */ }

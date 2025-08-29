@@ -13,12 +13,22 @@
 </head>
 <body class="min-h-screen">
   <!-- Navbar (dynamically loaded) -->
-  <div id="navbar-container"></div>
   <script>
     fetch('components/navbar.html')
       .then(res => res.text())
       .then(html => { document.getElementById('navbar-container').innerHTML = html; });
   </script>
+
+  <!-- Settings Modal/Button (dynamically loaded after navbar) -->
+  <div id="settings-container"></div>
+  <script>
+    fetch('components/settings.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('settings-container').innerHTML = html;
+      });
+  </script>
+  <script src="assets/js/settings.js"></script>
   <div class="analytics-layout">
     <!-- Sidebar Navigation Tabs -->
     <aside class="analytics-sidebar">

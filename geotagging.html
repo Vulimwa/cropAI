@@ -17,8 +17,17 @@
 <body>
     <!-- Overlay for navbar (for mobile nav reveal) -->
     <div id="nav-overlay" class="nav-overlay"></div>
-    <!-- Top Navbar (loaded dynamically) -->
     <div id="navbar-container"></div>
+        <!-- Settings Modal/Button (dynamically loaded after navbar) -->
+        <div id="settings-container"></div>
+        <script>
+            fetch('components/settings.html')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('settings-container').innerHTML = html;
+                });
+        </script>
+        <script src="assets/js/settings.js"></script>
     <!-- Main Split Layout -->
     <main class="main-layout mt-navbar">
         <!-- Map Section -->
