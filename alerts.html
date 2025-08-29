@@ -11,19 +11,27 @@
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css">
 </head>
 <body>
+  <div id="navbar-container"></div>
   <script>
-    fetch('components/navbar.html').then(res => res.text()).then(html => { document.getElementById('navbar-container').innerHTML = html; });
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('components/navbar.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('navbar-container').innerHTML = html;
+          // Dynamically load navbar.js after navbar is injected
+          var script = document.createElement('script');
+          script.src = 'assets/js/navbar.js';
+          document.body.appendChild(script);
+        });
+      // Settings modal
+      fetch('components/settings.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('settings-container').innerHTML = html;
+        });
+    });
   </script>
-
-  <!-- Settings Modal/Button (dynamically loaded after navbar) -->
   <div id="settings-container"></div>
-  <script>
-    fetch('components/settings.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('settings-container').innerHTML = html;
-      });
-  </script>
   <script src="assets/js/settings.js"></script>
   <div class="alerts-layout">
     <div class="alerts-header">
