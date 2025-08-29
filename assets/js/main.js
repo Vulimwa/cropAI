@@ -1,3 +1,24 @@
+// --- Global Settings Icon Handler ---
+function setupSettingsIcon() {
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('#settingsBtn');
+    if (btn) {
+      const modal = document.getElementById('settingsModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+    }
+    const closeBtn = e.target.closest('#closeSettings');
+    if (closeBtn) {
+      const modal = document.getElementById('settingsModal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', setupSettingsIcon);
 // --- Global Dark/Light Mode Toggle ---
 function setupThemeToggle() {
   const themeToggle = document.getElementById('theme-toggle');
