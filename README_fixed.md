@@ -76,19 +76,19 @@ cropAI/
 ## Pending / In Progress
 
 - **Backend Integration:**
-	- Connect disease detection to a real AI backend/API
-	- Integrate real geotagging/map data and analytics from backend
-	- Implement real-time alerts and notifications from backend
+  - Connect disease detection to a real AI backend/API
+  - Integrate real geotagging/map data and analytics from backend
+  - Implement real-time alerts and notifications from backend
 - **User Authentication:**
-	- Add user accounts, login, and personalized history
+  - Add user accounts, login, and personalized history
 - **Community Forum:**
-	- Enable posting, commenting, and discussion features
+  - Enable posting, commenting, and discussion features
 - **Advanced Data Export:**
-	- Enable export of analytics and scan history to CSV/PDF
+  - Enable export of analytics and scan history to CSV/PDF
 - **Accessibility Improvements:**
-	- Further optimize for screen readers and keyboard navigation
+  - Further optimize for screen readers and keyboard navigation
 - **Testing & QA:**
-	- Add automated tests and conduct cross-browser/device QA
+  - Add automated tests and conduct cross-browser/device QA
 
 ---
 
