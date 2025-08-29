@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-
 </head>
 <body class="min-h-screen">
   <!-- Offline Banner -->
@@ -17,6 +16,36 @@
     <span id="offlineText">You are currently offline. Some features may be limited.</span>
   </div>
 
+  <!-- Header -->
+  <header class="earthy-gradient text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center">
+        <i class="fas fa-leaf text-2xl mr-2"></i>
+        <h1 class="text-xl font-bold">CropGuard AI</h1>
+      </div>
+      <div class="flex items-center">
+        <div class="mr-4">
+          <select id="languageSelector" class="bg-white bg-opacity-20 rounded px-3 py-1 text-sm focus:outline-none">
+            <option value="en">English</option>
+            <option value="sw">Swahili</option>
+            <option value="fr">French</option>
+            <option value="hi">Hindi</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
+        <a href="javascript:void(0)" id="settingsBtn" class="p-2 rounded-full hover:bg-white hover:bg-opacity-20 relative">
+          <i class="fas fa-cog"></i>
+        </a>
+        <button id="themeToggleBtn" class="theme-toggle">
+          <i class="fas fa-moon"></i>
+          <span id="themeToggleText">Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-6">
     
     <!-- Weather Widget -->
     <div class="mb-8">
