@@ -41,9 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Set active link based on current page
-  let path = window.location.pathname.split('/').pop();
-  // Treat index.html as main.html for active link
-  if (path === 'index.html' || path === '') path = 'main.html';
+  const path = window.location.pathname.split('/').pop();
   document.querySelectorAll('#navbar-links a').forEach(link => {
     if (link.getAttribute('href') === path) {
       link.classList.add('active');
