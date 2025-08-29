@@ -6,6 +6,7 @@
   <title>CropAI | Analytics</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/navbar.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,10 +34,19 @@
     });
   </script>
   <div id="settings-container"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('components/settings.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('settings-container').innerHTML = html;
+        });
+    });
+  </script>
   <script src="assets/js/settings.js"></script>
   <div class="analytics-layout">
     <!-- Sidebar Navigation Tabs -->
-    <aside class="analytics-sidebar">
+  <aside class="analytics-sidebar" style="background:#19ad50;">
       <div class="sidebar-title">CropAI Analytics</div>
       <nav class="sidebar-tabs">
         <button class="sidebar-tab active" data-tab="overview"><i class="fas fa-th-large mr-2"></i>Overview</button>

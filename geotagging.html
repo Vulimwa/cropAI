@@ -7,6 +7,7 @@
     <title>CropAI | Geo Mapping</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/navbar.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Maplibre GL JS -->
@@ -19,15 +20,17 @@
     <div id="nav-overlay" class="nav-overlay"></div>
     <div id="navbar-container"></div>
         <!-- Settings Modal/Button (dynamically loaded after navbar) -->
-        <div id="settings-container"></div>
-        <script>
+    <div id="settings-container"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
             fetch('components/settings.html')
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById('settings-container').innerHTML = html;
                 });
-        </script>
-        <script src="assets/js/settings.js"></script>
+        });
+    </script>
+    <script src="assets/js/settings.js"></script>
     <!-- Main Split Layout -->
     <main class="main-layout mt-navbar">
         <!-- Map Section -->
