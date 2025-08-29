@@ -6,23 +6,41 @@
   <title>CropAI | Disease Alerts</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/navbar.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css">
 </head>
 <body>
+  <div id="navbar-container"></div>
   <script>
-    fetch('components/navbar.html').then(res => res.text()).then(html => { document.getElementById('navbar-container').innerHTML = html; });
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('components/navbar.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('navbar-container').innerHTML = html;
+          // Dynamically load navbar.js after navbar is injected
+          var script = document.createElement('script');
+          script.src = 'assets/js/navbar.js';
+          document.body.appendChild(script);
+        });
+      // Settings modal
+      fetch('components/settings.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('settings-container').innerHTML = html;
+        });
+    });
   </script>
-
-  <!-- Settings Modal/Button (dynamically loaded after navbar) -->
   <div id="settings-container"></div>
   <script>
-    fetch('components/settings.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('settings-container').innerHTML = html;
-      });
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('components/settings.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('settings-container').innerHTML = html;
+        });
+    });
   </script>
   <script src="assets/js/settings.js"></script>
   <div class="alerts-layout">
