@@ -1,24 +1,23 @@
 <!-- CropAI Navbar Component -->
-<nav class="navbar">
+<nav class="navbar" role="navigation" aria-label="Main Navigation">
     <div class="navbar-inner">
-        <div class="navbar-logo">
-            <i class="fas fa-leaf text-2xl mr-2"></i>
-            <span>CropGuard AI</span>
-        </div>
-        <button id="navbar-hamburger" aria-label="Open navigation">
+        <a href="index.html" class="navbar-logo" style="text-decoration:none;">
+            <i class="fas fa-leaf" style="color:#b6e388;font-size:2rem;margin-right:0.5rem;"></i>
+            <span style="font-size:1.3rem;font-weight:bold;letter-spacing:1px;color:#fff;">CropAI</span>
+        </a>
+        <button id="navbar-hamburger" aria-label="Open navigation" aria-controls="navbar-links" aria-expanded="false" tabindex="0">
             <i class="fas fa-bars"></i>
         </button>
         <div id="navbar-links">
             <a href="index.html">Home</a>
-            <a href="geotagging.html">GeoTagging</a>
+            <a href="geotagging.html">Geotagging</a>
             <a href="analytics.html">Analytics</a>
             <span class="navbar-alert">
-                <a href="disease.html" title="Disease Alerts"><i class="fas fa-bell"></i><span id="alert-badge">●</span></a>
+                <a href="alerts.html" title="Disease Alerts"><i class="fas fa-bell"></i><span id="alert-badge">●</span></a>
             </span>
-            <a href="about.html">About</a>
         </div>
         <div class="navbar-right">
-            <select id="languageSelector">
+            <select id="languageSelector" aria-label="Select language">
                 <option value="en">English</option>
                 <option value="sw">Swahili</option>
                 <option value="fr">French</option>
@@ -31,5 +30,13 @@
 </nav>
 <!-- End Navbar Component -->
 <link rel="stylesheet" href="assets/css/navbar.css">
-<script src="assets/js/navbar.js"></script>
+<script>
+// Ensure navbar.js is loaded after navbar is injected (for dynamic loads)
+if (!window.__navbarScriptLoaded) {
+    var script = document.createElement('script');
+    script.src = 'assets/js/navbar.js';
+    script.onload = function() { window.__navbarScriptLoaded = true; };
+    document.body.appendChild(script);
+}
+</script>
 <!-- End Navbar Component -->

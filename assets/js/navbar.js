@@ -5,20 +5,40 @@ document.addEventListener('DOMContentLoaded', function() {
   // Hamburger menu toggle
   const hamburger = document.getElementById('navbar-hamburger');
   const navLinks = document.getElementById('navbar-links');
+
+  // Hamburger menu toggle and overlay logic
+  const navOverlay = document.getElementById('nav-overlay');
+  function openNav() {
+    navLinks.classList.add('open');
+    document.body.classList.add('nav-open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    if (navOverlay) navOverlay.style.display = 'block';
+  }
+  function closeNav() {
+    navLinks.classList.remove('open');
+    document.body.classList.remove('nav-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    if (navOverlay) navOverlay.style.display = 'none';
+  }
   if (hamburger && navLinks) {
     hamburger.addEventListener('click', function() {
-      navLinks.classList.toggle('open');
-      document.body.classList.toggle('nav-open');
+      if (navLinks.classList.contains('open')) {
+        closeNav();
+      } else {
+        openNav();
+      }
     });
   }
-
   // Close menu on link click (mobile)
   document.querySelectorAll('#navbar-links a').forEach(link => {
     link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      document.body.classList.remove('nav-open');
+      closeNav();
     });
   });
+  // Close menu on overlay click
+  if (navOverlay) {
+    navOverlay.addEventListener('click', closeNav);
+  }
 
   // Set active link based on current page
   const path = window.location.pathname.split('/').pop();

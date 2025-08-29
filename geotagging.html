@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CropAI | Geo Mapping</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Maplibre GL JS -->
     <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
 </head>
+
 <body>
     <!-- Overlay for navbar (for mobile nav reveal) -->
     <div id="nav-overlay" class="nav-overlay"></div>
@@ -69,24 +73,64 @@
         <!-- Backend: Use for add/edit outbreak, details, etc. -->
     </div>
     <script>
-    // Dynamically load the navbar component and update navigation links
-    fetch('components/navbar.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('navbar-container').innerHTML = html;
-        // Fix navigation links for SPA-like navigation
-        const navLinks = document.querySelectorAll('.nav-links a');
-        navLinks.forEach(link => {
-          link.addEventListener('click', function(e) {
-            if (this.getAttribute('href') === 'index.html') {
-              window.location.href = 'index.html';
-            } else if (this.getAttribute('href') === 'geotagging.html') {
-              window.location.href = 'geotagging.html';
-            } // add more if needed
-          });
-        });
-      });
+        // Dynamically load the navbar component (with bell and logo always present)
+        fetch('components/navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+                // Dynamically load navbar.js after navbar is injected
+                var script = document.createElement('script');
+                script.src = 'assets/js/navbar.js';
+                script.onload = function () {
+                    // Navbar JS loaded
+                };
+                document.body.appendChild(script);
+            });
     </script>
     <script src="assets/js/geotagging.js"></script>
+    </script>
+    <script>
+        // --- Export Outbreaks as CSV ---
+        document.addEventListener('DOMContentLoaded', function () {
+            const exportBtn = document.getElementById('export-btn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function () {
+                    // Collect outbreak data from the DOM (or replace with backend data as needed)
+                    // Example: Each outbreak card has data attributes or is rendered in a known structure
+                    const outbreaks = [];
+                    document.querySelectorAll('.outbreaks-list .outbreak-card').forEach(card => {
+                        // Example: data attributes (customize as per your card structure)
+                        outbreaks.push({
+                            disease: card.getAttribute('data-disease') || '',
+                            location: card.getAttribute('data-location') || '',
+                            date: card.getAttribute('data-date') || '',
+                            severity: card.getAttribute('data-severity') || '',
+                            notes: card.getAttribute('data-notes') || ''
+                        });
+                    });
+                    // If no outbreaks, show a message
+                    if (outbreaks.length === 0) {
+                        alert('No outbreaks to export.');
+                        return;
+                    }
+                    // Build CSV
+                    const headers = ['Disease', 'Location', 'Date', 'Severity', 'Notes'];
+                    const rows = outbreaks.map(o => [o.disease, o.location, o.date, o.severity, o.notes]);
+                    let csvContent = [headers, ...rows].map(e => e.map(cell => '"' + (cell || '').replace(/"/g, '""') + '"').join(",")).join("\n");
+                    // Download CSV
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'CropAI-Outbreaks.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+            }
+        });
+    </script>
 </body>
+
 </html>

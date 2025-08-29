@@ -2,7 +2,7 @@
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 1000;
+  z-index: 2000;
   background: linear-gradient(90deg, #8BAA61 0%, #5D7C3A 100%);
   color: #fff;
   box-shadow: 0 2px 8px rgba(93,124,58,0.07);
@@ -124,9 +124,12 @@ body, html {
 }
 @media (max-width: 700px) {
   #navbar-hamburger {
-    display: block;
+    display: block !important;
+    z-index: 2100;
+    position: relative;
   }
   #navbar-links {
+    display: none;
     position: fixed;
     top: 56px;
     left: 0;
@@ -137,12 +140,17 @@ body, html {
     gap: 0;
     padding: 1rem 1.5rem;
     box-shadow: 0 4px 16px rgba(93,124,58,0.13);
-    transform: translateY(-120%);
-    transition: transform 0.3s cubic-bezier(.77,0,.18,1);
     z-index: 1200;
+    animation: none;
+    transition: none;
   }
   #navbar-links.open {
-    transform: translateY(0);
+    display: flex;
+    animation: navbarSlideDown 0.32s cubic-bezier(.77,0,.18,1);
+  }
+  @keyframes navbarSlideDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to { opacity: 1; transform: none; }
   }
   body.nav-open {
     overflow: hidden;
